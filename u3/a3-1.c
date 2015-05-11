@@ -7,8 +7,9 @@ Autor: Juri Wiens (Matrikelnr: 9023765)
 Erstellt: 10.05.2015
 
 Aufgabe:
-Schreiben Sie bitte in C einen kleinen Kommandointerpreter myshell, der 5 Unix
-Kommandos Ihrer Wahl in einem Menü zur Auswahl bereitstellt.
+Programm schreiben, das drei oder möglichst viele Kindprozesse mit
+unterschiedlich langer Laufzeit erzeugt, auf deren Terminierung wartet und
+deren Rückgabewert ausgibt.
 
 Nutzungshinweise:
 Aufruf mit optionalem --endless Flag führt dazu, dass theoretisch unendliche
@@ -79,7 +80,8 @@ bool endless_mode = false;
 * process by calling the related functions, which are handed over as function
 * pointer parameter.
 */
-void create_child_process(void (*process_parent_ptr)(), void (*process_child_ptr)()) {
+void create_child_process(void (*process_parent_ptr)(),
+    void (*process_child_ptr)()) {
   // Fork process
   pid_t pid = fork();
 
