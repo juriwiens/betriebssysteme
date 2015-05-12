@@ -49,6 +49,9 @@ void create_child_process(void (*process_parent_ptr)(),
   }
 }
 
+/**
+* Processes parent process.
+*/
 void process_parent(pid_t child_pid) {
   printf("Created child process with PID: %d\n", child_pid);
 
@@ -56,6 +59,9 @@ void process_parent(pid_t child_pid) {
   sleep(90);
 }
 
+/**
+* Processes child process.
+*/
 void process_child() {
   printf("I can't stay long...\n");
   exit(EXIT_SUCCESS);

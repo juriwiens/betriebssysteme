@@ -102,11 +102,17 @@ void create_child_process(void (*process_parent_ptr)(),
   }
 }
 
+/**
+* Processes parent process.
+*/
 void process_parent() {
   child_processes_created++;
   printf("Created child process\n");
 }
 
+/**
+* Processes child process.
+*/
 void process_child() {
   // Initialize random number generator and generate random number mod 10
   srand(time(NULL) + getpid());
@@ -121,6 +127,9 @@ void process_child() {
   exit(EXIT_SUCCESS);
 }
 
+/**
+* Waits for all child processes to exit and cleans up their processes.
+*/
 void wait_for_child_processes() {
   pid_t child_process_pid;
   int child_process_status;
