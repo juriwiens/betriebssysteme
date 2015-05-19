@@ -35,8 +35,8 @@ Verwendete Systemfunktionen:
   "Linux-Unix Programmierung" vom Rheinwerk Verlag.
 */
 
-#include <stdio.h> // required by printf, perror
-#include <pthread.h> // required by pthread_create, pthread_join
+#include <stdio.h> // printf, perror
+#include <pthread.h> // pthread_create, pthread_join
 
 /**
 * Number of threads to create.
@@ -76,7 +76,7 @@ void *char_print(void *params_ptr) {
     printf("%c\n", params->character);
   }
 
-  return NULL; // Nothing to return
+  pthread_exit(NULL); // Exit thread without a return value
 }
 
 /**
