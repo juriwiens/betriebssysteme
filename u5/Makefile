@@ -1,4 +1,4 @@
-# Makefile für Blatt 4
+# Makefile für Blatt 5
 
 mysh2: mysh2.c
 	$(CC) -o bin/$@ $<
