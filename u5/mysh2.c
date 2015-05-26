@@ -64,13 +64,15 @@ Verwendete Systemfunktionen:
 #include <stdlib.h> // exit
 #include <stdio.h> // printf, fgets, perror, fprintf
 #include <string.h> // strsep, strpbrk, strcpy
-#include <ctype.h> // isspace
 #include <stdbool.h> // bool type
 #include <unistd.h> // fork, close, execlp
 #include <fcntl.h> // open
 #include <errno.h> // errno
 
+#include "mystrlib.c" // split_str, trim
+
 const int MAX_INPUT_LENGTH = 256;
+const int MAX_ARGS_COUNT = 100;
 
 /**
 * Struct that includes all information needed to create a new child
@@ -78,31 +80,11 @@ const int MAX_INPUT_LENGTH = 256;
 */
 typedef struct {
   char *program;        // Parsed program name
+  char *program_args[MAX_ARGS_COUNT]; // Parsed program args
+  int program_args_count;
   char *stdin_src;      // Parsed standard input source
   char *stdout_target;  // Parsed standard output target
 } process_options_t;
-
-/**
-* Trims all leading and trailing white-spaces from str.
-*/
-char *trim(char *str) {
-  char *end;
-
-  // Trim leading space
-  while(isspace(*str)) str++;
-
-  if(*str == '\0')  // All spaces?
-    return str;
-
-  // Trim trailing space
-  end = str + strlen(str) - 1;
-  while(end > str && isspace(*end)) end--;
-
-  // Write new null terminator
-  *(end+1) = '\0';
-
-  return str;
-}
 
 /**
 * Prompts user and saves input.
@@ -117,6 +99,8 @@ void prompt_user(char *input) {
 * Returns true is parsing was successful.
 */
 bool parse_input(char *input, process_options_t *opts_ptr) {
+  char *program_with_args = NULL; // Program command with arguments
+
   // Reset parsed results
   opts_ptr->program = NULL;
   opts_ptr->stdin_src = NULL;
@@ -128,30 +112,39 @@ bool parse_input(char *input, process_options_t *opts_ptr) {
 
   // Case 1: No redirections at all
   if (stdin_symbol_ptr == NULL && stdout_symbol_ptr == NULL) {
-    opts_ptr->program = trim(input);
+    program_with_args = trim(input);
   } else // line breaks after else for better readability
 
   // Case 2: stdin redirection only
   if (stdin_symbol_ptr != NULL && stdout_symbol_ptr == NULL) {
     // Seperate the symbol, so input gets divided into a left and a right side,
     // where input continues as a pointer to the first char of the right side.
-    opts_ptr->program = trim(strsep(&input, "<")); // The left side
+    program_with_args = trim(strsep(&input, "<")); // The left side
     opts_ptr->stdin_src = trim(input); // The right side
   } else
 
   // Case 3: stdout redirection only
   if (stdout_symbol_ptr != NULL && stdin_symbol_ptr == NULL) {
     // Same procedure like in case 2 (see above).
-    opts_ptr->program = trim(strsep(&input, ">"));
+    program_with_args = trim(strsep(&input, ">"));
     opts_ptr->stdout_target = trim(input);
   } else
 
   // Case 4: stdin and stdout redirection combined
   if (stdin_symbol_ptr != NULL && stdout_symbol_ptr != NULL) {
-    opts_ptr->program = trim(strsep(&input, "<"));
+    program_with_args = trim(strsep(&input, "<"));
     opts_ptr->stdin_src = trim(strsep(&input, ">"));
     opts_ptr->stdout_target = trim(input);
   }
+
+  // Split programm_with_args into program name and args
+  split_str(program_with_args, " ", opts_ptr->program_args, &opts_ptr->program_args_count);
+
+  // Add NULL as last argument (because of exec function)
+  opts_ptr->program_args[opts_ptr->program_args_count] = NULL;
+
+  // First part should be the program name
+  opts_ptr->program = opts_ptr->program_args[0];
 
   // Finally check for emptiness
   if (opts_ptr->stdin_src != NULL && *opts_ptr->stdin_src == '\0') {
@@ -163,7 +156,12 @@ bool parse_input(char *input, process_options_t *opts_ptr) {
     return false;
   }
 
+  // Some debugging prints
   printf("[DEBUG] program: '%s'\n", opts_ptr->program);
+  for (int i = 0; i <= opts_ptr->program_args_count; i++) {
+    printf("[DEBUG] program_args[%d]: '%s'\n", i, opts_ptr->program_args[i]);
+  }
+  printf("[DEBUG] program_args_count: %d\n", opts_ptr->program_args_count);
   printf("[DEBUG] stdin_src: '%s'\n", opts_ptr->stdin_src);
   printf("[DEBUG] stdout_target: '%s'\n", opts_ptr->stdout_target);
 
@@ -244,7 +242,7 @@ void exec_program(process_options_t *opts_ptr) {
   }
 
   // Execute program
-  execlp(opts_ptr->program, opts_ptr->program, NULL);
+  execvp(opts_ptr->program, opts_ptr->program_args);
 }
 
 int main(void) {
