@@ -1,0 +1,27 @@
+SS 2015:
+
+ 1 : Übersetzen und Ausführen eines gegebenen Programms: Ausgabe auf den Bildschirm, Ausgabe in eine Datei
+
+14 : chroot, dynamic libraries 
+
+17 : Dynamisches Laden, Shared Objects 
+  
+ 2 : Erzeugung und Ausführung eines Kindprozesses: myshell 
+
+ 3 : Erzeugung eines Kind-Prozesses, Zombie-Prozesse 
+
+ 4 : Threads
+
+ 5 : Umlenkung von stdin u. stdout
+
+13 : CPU-Scheduling
+
+18 : Warteschlangen
+
+ 8 : Kommunikation über Pipes
+
+ 9 : Critical Sections
+
+12 : File Locking
+
+11 : Message Queues
