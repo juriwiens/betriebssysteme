@@ -20,8 +20,8 @@ SS 2015:
 
  8 : Kommunikation über Pipes
 
- 9 : Critical Sections
-
-12 : File Locking
+ 9 : Critical Sections 
 
 11 : Message Queues
+
+12 : File Locking
