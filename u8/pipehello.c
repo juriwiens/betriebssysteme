@@ -54,6 +54,7 @@ Verwendete Systemfunktionen:
 /** Pipe file descriptors */
 int pipe_fds[2];
 
+/** The child process' "main function" */
 void child_main(void *args) {
   char read_buf[PIPE_BUF]; // Pipe read buffer
   size_t read_buf_size; // Current pipe read buffer size
