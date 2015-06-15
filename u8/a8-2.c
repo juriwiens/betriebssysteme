@@ -83,7 +83,7 @@ int main(void) {
   close(pipe2_fds[1]);
 
   // Write pipe1_buf to pipe1
-  if ((write(pipe1_fds[1], pipe1_buf, pipe1_buf_size) != pipe1_buf_size)) {
+  if (write(pipe1_fds[1], pipe1_buf, pipe1_buf_size) != pipe1_buf_size) {
     perror("ERROR: Writing to pipe1 failed");
     exit(EXIT_FAILURE);
   }
