@@ -17,9 +17,9 @@ test: msgsnd msgrcv
 	bin/msgsnd 100 8 "Typ8"
 	bin/msgsnd 100 9 "Typ9"
 	bin/msgsnd 100 7 "Typ7"
-	ipcs -qo # Show Message Queue status
+	ipcs -qo # Show Message Queue status, expected messages: 4
 	# Receive some of the messages
 	bin/msgrcv 100 8
 	bin/msgrcv 100 4
 	bin/msgrcv 100 7
-	ipcs -qo # Show Message Queue status
+	ipcs -qo # Show Message Queue status, expected messages: 1
